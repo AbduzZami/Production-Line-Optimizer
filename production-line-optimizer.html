@@ -25,12 +25,13 @@ body{
   background-size:24px 24px;
   color:var(--ink);font:16px/1.5 var(--body);font-variant-numeric:tabular-nums;
 }
-.wrap{max-width:1240px;margin:0 auto;padding:28px 16px 60px}
+.wrap{max-width:1280px;margin:0 auto;padding:28px 16px 60px}
 h1,h2{font-family:var(--disp);font-weight:700;line-height:1.05;margin:0}
 h1{font-size:clamp(2.2rem,5vw,3.6rem);letter-spacing:-.01em}
 h2{font-size:1.5rem;margin-bottom:12px}
 p{margin:0}
-input:focus-visible,button:focus-visible,.chip:focus-visible{outline:3px solid var(--par);outline-offset:2px}
+button{font:inherit}
+:focus-visible{outline:3px solid var(--par);outline-offset:2px}
 
 .titleblock{display:grid;grid-template-columns:1fr auto;border:2px solid var(--ink);background:var(--sheet)}
 .titleblock .intro{padding:22px 24px;border-right:2px solid var(--ink)}
@@ -42,47 +43,91 @@ input:focus-visible,button:focus-visible,.chip:focus-visible{outline:3px solid v
 .params input{font:600 1.4rem var(--disp);width:100%;border:0;border-bottom:1px dashed var(--edge);background:transparent;color:var(--ink);padding:0}
 .params .v{font:600 1.4rem var(--disp)}
 
-.editor{display:grid;grid-template-columns:minmax(0,1fr) 280px;margin-top:22px;border:2px solid var(--ink);background:var(--sheet)}
+/* editor */
+.editor{display:grid;grid-template-columns:minmax(0,1fr) 290px;margin-top:22px;border:2px solid var(--ink);background:var(--sheet)}
 .canvasside{padding:16px 18px;border-right:2px solid var(--ink);min-width:0}
-.toolbar{display:flex;flex-wrap:wrap;gap:10px;align-items:center;margin-bottom:10px}
-.toolbar h2{margin:0 auto 0 0}
-.chip{display:inline-flex;align-items:center;gap:8px;font:600 1rem var(--disp);padding:6px 14px;border:2px dashed var(--ink);background:var(--par-bg);color:var(--ink);cursor:grab;touch-action:none;user-select:none}
+.edhead{display:flex;flex-wrap:wrap;gap:10px 16px;align-items:center;justify-content:space-between;margin-bottom:12px}
+.edhead h2{margin:0}
+.toolbar{display:flex;flex-wrap:wrap;gap:8px;align-items:center}
+.sep{width:1px;align-self:stretch;background:var(--grid);margin:0 2px}
+.chip{display:inline-flex;align-items:center;gap:8px;font:600 1.05rem var(--disp);padding:7px 16px;border:2px dashed var(--par);background:var(--par-bg);color:var(--ink);cursor:grab;touch-action:none;user-select:none}
+.chip:hover{border-style:solid}
 .chip:active{cursor:grabbing}
-.chip i{display:inline-block;width:18px;height:12px;border:2px solid var(--ink);background:var(--sheet)}
-.btn{font:600 1rem var(--disp);padding:6px 14px;border:2px solid var(--ink);background:var(--sheet);color:var(--ink);cursor:pointer}
+.chip i{display:inline-block;width:20px;height:13px;border:2px solid var(--ink);background:var(--sheet)}
+.btn{font:600 1rem var(--disp);padding:6px 13px;border:2px solid var(--ink);background:var(--sheet);color:var(--ink);cursor:pointer;white-space:nowrap}
+.btn:hover:not(:disabled){background:var(--ink);color:var(--sheet)}
+.btn:disabled{opacity:.4;cursor:default}
 .btn.danger{border-color:var(--hot);color:var(--hot)}
-.canvaswrap{overflow-x:auto;border:1px solid var(--edge);background:radial-gradient(circle,var(--grid) 1.2px,transparent 1.3px) 0 0/20px 20px,var(--sheet)}
-#canvas{display:block;width:100%;min-width:760px;height:auto;touch-action:none;user-select:none}
-.hint{margin-top:10px;font-size:.88rem;color:var(--muted)}
-.msg{margin-top:8px;font-size:.92rem;color:var(--hot);min-height:1.4em}
+.btn.danger:hover{background:var(--hot);color:var(--sheet)}
+
+.menuwrap{position:relative}
+.menu{position:absolute;right:0;top:calc(100% + 6px);z-index:30;width:min(340px,88vw);background:var(--sheet);border:2px solid var(--ink);box-shadow:5px 5px 0 var(--ink)}
+.menu[hidden]{display:none}
+.menu button{display:block;width:100%;text-align:left;padding:10px 14px;border:0;border-bottom:1px solid var(--grid);background:transparent;color:var(--ink);cursor:pointer}
+.menu button:last-child{border-bottom:0}
+.menu button:hover,.menu button:focus-visible{background:var(--par-bg);outline:0}
+.menu b{display:block;font:600 1.1rem var(--disp)}
+.menu span{display:block;font-size:.88rem;color:var(--muted);line-height:1.35}
+.menu small{display:block;font-size:.8rem;color:var(--par);margin-top:3px}
+
+.steps{list-style:none;margin:0 0 12px;padding:0;display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:8px;counter-reset:s}
+.steps li{counter-increment:s;display:flex;gap:8px;align-items:flex-start;font-size:.86rem;line-height:1.35;color:var(--muted)}
+.steps li::before{content:counter(s);flex:none;display:grid;place-items:center;width:22px;height:22px;border-radius:50%;background:var(--ink);color:var(--sheet);font:600 .85rem var(--disp)}
+.steps b{color:var(--ink);font-weight:600}
+
+.canvaswrap{position:relative;overflow-x:auto;border:1px solid var(--edge);background:radial-gradient(circle,var(--grid) 1.2px,transparent 1.3px) 0 0/20px 20px,var(--sheet)}
+.canvaswrap.drop{outline:3px dashed var(--par);outline-offset:-3px}
+#canvas{display:block;touch-action:none;user-select:none}
+.below{display:flex;flex-wrap:wrap;justify-content:space-between;gap:6px 16px;margin-top:8px;font-size:.84rem;color:var(--muted)}
+kbd{font:600 .78rem var(--body);border:1px solid var(--edge);border-bottom-width:2px;padding:0 5px;background:var(--sheet);color:var(--ink)}
+.errs{margin-top:8px;font-size:.92rem;color:var(--hot)}
+.errs:empty{display:none}
+.toast{position:fixed;left:50%;bottom:24px;transform:translateX(-50%);z-index:40;max-width:min(560px,92vw);padding:10px 16px;border:2px solid var(--ink);background:var(--ink);color:var(--sheet);font-size:.95rem;box-shadow:4px 4px 0 var(--par)}
+.toast.err{background:var(--hot);border-color:var(--hot);box-shadow:4px 4px 0 var(--ink)}
+.toast[hidden]{display:none}
 
 .inspector{padding:16px 18px}
 .inspector p{color:var(--muted);font-size:.92rem}
 .field{margin-bottom:12px}
 .field label{display:block;font-size:.82rem;color:var(--muted)}
 .field input{width:100%;font:600 1.3rem var(--disp);color:var(--ink);background:transparent;border:0;border-bottom:2px solid var(--ink);padding:2px 0}
+.field input:focus{border-bottom-color:var(--par);outline:0}
+.field .help{font-size:.78rem;color:var(--muted)}
 .kv{display:grid;grid-template-columns:auto 1fr;gap:4px 12px;font-size:.92rem;margin:4px 0 14px}
 .kv dt{color:var(--muted)} .kv dd{margin:0;text-align:right}
+.status{padding:10px 12px;margin:0 0 14px;font-size:.9rem;border-left:4px solid var(--par);background:var(--par-bg)}
+.status.hot{border-color:var(--hot);background:var(--hot-bg)}
 
+/* editor svg */
 .enode{cursor:grab}
-.enode rect{fill:var(--sheet);stroke:var(--ink);stroke-width:2}
-.enode.hot rect{fill:var(--hot-bg);stroke:var(--hot);stroke-width:2.5}
-.enode.bad rect{stroke:var(--hot);stroke-dasharray:5 4}
-.enode.sel rect,.enode.sel circle.body{stroke:var(--par);stroke-width:3.5}
-.enode .nid{font:700 18px var(--disp);fill:var(--ink)}
-.enode .nt{font:500 12.5px var(--body);fill:var(--ink)}
-.enode .nc{font:500 11.5px var(--body);fill:var(--muted)}
+.enode rect.box{fill:var(--sheet);stroke:var(--ink);stroke-width:2}
+.enode:hover rect.box{stroke-width:3}
+.enode.hot rect.box{fill:var(--hot-bg);stroke:var(--hot);stroke-width:2.5}
+.enode.bad rect.box{stroke:var(--hot);stroke-dasharray:5 4}
+.enode.sel rect.box,.enode.sel circle.body{stroke:var(--par);stroke-width:4}
+.nid{font:700 19px var(--disp);fill:var(--ink)}
+.nt{font:600 12.5px var(--body);fill:var(--ink)}
+.nn{font:500 12px var(--body);fill:var(--ink)}
+.nc{font:500 11px var(--body);fill:var(--muted)}
 .term circle.body{fill:var(--ink);stroke:var(--ink);stroke-width:2}
 .term text{font:600 13px var(--disp);fill:var(--sheet);pointer-events:none}
-.port{fill:var(--sheet);stroke:var(--ink);stroke-width:2;cursor:crosshair}
-.port:hover{fill:var(--par);stroke:var(--par)}
+.port{fill:var(--sheet);stroke:var(--ink);stroke-width:2;pointer-events:none}
+.porthit{fill:transparent;cursor:crosshair}
+.porthit:hover + .port,.enode:hover .port{fill:var(--par);stroke:var(--par)}
+.delbtn{cursor:pointer}
+.delbtn circle{fill:var(--hot)}
+.delbtn text{font:700 15px var(--body);fill:#fff;pointer-events:none}
 .eedge{cursor:pointer}
-.eedge .hit{fill:none;stroke:transparent;stroke-width:14}
+.eedge .hit{fill:none;stroke:transparent;stroke-width:16}
 .eedge .line{fill:none;stroke:var(--edge);stroke-width:1.8}
+.eedge:hover .line{stroke:var(--ink)}
 .eedge.sel .line{stroke:var(--par);stroke-width:3}
-.tmp{fill:none;stroke:var(--par);stroke-width:2;stroke-dasharray:6 5;pointer-events:none}
-.ghost{position:fixed;z-index:10;pointer-events:none;width:110px;height:62px;border:2px dashed var(--par);background:var(--par-bg);opacity:.85;transform:translate(-50%,-50%);display:none}
+.tmp{fill:none;stroke:var(--par);stroke-width:2.2;stroke-dasharray:6 5;pointer-events:none}
+.empty{font:600 22px var(--disp);fill:var(--muted);pointer-events:none}
+.empty2{font:400 14px var(--body);fill:var(--muted);pointer-events:none}
+.ghost{position:fixed;z-index:50;pointer-events:none;width:130px;height:70px;border:2px dashed var(--par);background:var(--par-bg);opacity:.9;transform:translate(-50%,-50%);display:none;font:600 1rem var(--disp);color:var(--ink);place-items:center}
 
+/* results */
 .board{display:grid;grid-template-columns:minmax(0,1fr) 330px;margin-top:22px;border:2px solid var(--ink);background:var(--sheet)}
 .stage{padding:16px 18px;border-right:2px solid var(--ink);min-width:0}
 .diagram{overflow-x:auto;border:1px solid var(--grid);background:var(--sheet)}
@@ -95,12 +140,10 @@ input:focus-visible,button:focus-visible,.chip:focus-visible{outline:3px solid v
 .node rect{fill:var(--sheet);stroke:var(--ink);stroke-width:2}
 .node.par rect{fill:var(--par-bg);stroke:var(--par)}
 .node.hot rect{fill:var(--hot-bg);stroke:var(--hot);stroke-width:2.5}
-.node .nid{font:700 18px var(--disp);fill:var(--ink)}
-.node .nt{font:500 12.5px var(--body);fill:var(--ink)}
-.node .nc{font:500 11.5px var(--body);fill:var(--muted)}
 .rterm circle{fill:var(--ink)}
 .rterm text{font:600 13px var(--disp);fill:var(--sheet)}
 .edge{fill:none;stroke:var(--edge);stroke-width:1.6}
+.placeholder{padding:40px 20px;text-align:center;color:var(--muted)}
 
 .metrics{padding:16px 18px}
 table{border-collapse:collapse;width:100%}
@@ -114,9 +157,10 @@ table{border-collapse:collapse;width:100%}
 
 .panel{background:var(--sheet);border:2px solid var(--ink);padding:16px 18px;margin-top:22px}
 .panel > p{color:var(--muted);font-size:.92rem;margin-bottom:12px}
-.bars{display:grid;gap:12px;max-width:820px}
-.bar{display:grid;grid-template-columns:44px 1fr;gap:10px;align-items:center}
-.bar .id{font:700 1.2rem var(--disp)}
+.bars{display:grid;gap:12px;max-width:860px}
+.bar{display:grid;grid-template-columns:150px 1fr;gap:10px;align-items:center}
+.bar .id{font:700 1.15rem var(--disp);line-height:1.1}
+.bar .id small{display:block;font:400 .78rem var(--body);color:var(--muted)}
 .track{position:relative;display:grid;gap:3px}
 .fill{height:14px;font-size:.78rem;white-space:nowrap}
 .fill span{display:block;padding-left:calc(100% + 6px);line-height:14px;color:var(--muted)}
@@ -127,13 +171,16 @@ table{border-collapse:collapse;width:100%}
 .barkey{display:flex;gap:16px;font-size:.85rem;color:var(--muted);margin-top:14px;flex-wrap:wrap}
 footer{margin-top:22px;font-size:.85rem;color:var(--muted)}
 
-@media (max-width:900px){
+@media (max-width:980px){
   .editor,.board{grid-template-columns:1fr}
   .canvasside,.stage{border-right:0;border-bottom:2px solid var(--ink)}
+  .steps{grid-template-columns:repeat(2,minmax(0,1fr))}
 }
 @media (max-width:620px){
   .titleblock{grid-template-columns:1fr}
   .titleblock .intro{border-right:0;border-bottom:2px solid var(--ink)}
+  .bar{grid-template-columns:90px 1fr}
+  .sep{display:none}
 }
 @media (prefers-reduced-motion:no-preference){ .fill{transition:width .35s ease} }
 </style>
@@ -144,7 +191,7 @@ footer{margin-top:22px;font-size:.85rem;color:var(--muted)}
   <header class="titleblock">
     <div class="intro">
       <h1>Production line optimizer</h1>
-      <p>Draw your process flow on the canvas: drag in operations, set their times, and connect them. The optimizer finds the bottleneck and adds parallel stations until the line meets your target output.</p>
+      <p>Draw your process flow, set how long each operation takes, and choose a target output. The optimizer finds the bottleneck and adds parallel stations until the line meets the target.</p>
     </div>
     <div class="params">
       <div><label for="avail">Available time per hour (min)</label><input id="avail" type="number" min="1" step="1" value="60"></div>
@@ -155,18 +202,39 @@ footer{margin-top:22px;font-size:.85rem;color:var(--muted)}
 
   <section class="editor" aria-label="Flow diagram editor">
     <div class="canvasside">
-      <div class="toolbar">
+      <div class="edhead">
         <h2>Flow diagram</h2>
-        <span class="chip" id="paletteOp" role="button" tabindex="0" aria-label="Drag an operation onto the canvas, or press Enter to add one"><i></i>Operation</span>
-        <button class="btn" type="button" id="arrange">Auto-arrange</button>
-        <button class="btn" type="button" id="loadEx">Load sketch example</button>
-        <button class="btn danger" type="button" id="clear">Clear</button>
+        <div class="toolbar">
+          <span class="chip" id="paletteOp" role="button" tabindex="0" title="Drag onto the canvas, or press Enter to add"><i></i>Operation</span>
+          <span class="sep"></span>
+          <button class="btn" type="button" id="undo" title="Undo (Ctrl+Z)">Undo</button>
+          <button class="btn" type="button" id="redo" title="Redo (Ctrl+Y)">Redo</button>
+          <button class="btn" type="button" id="arrange" title="Line nodes up by stage">Tidy up</button>
+          <span class="sep"></span>
+          <div class="menuwrap">
+            <button class="btn" type="button" id="exBtn" aria-haspopup="menu" aria-expanded="false" aria-controls="exMenu">Examples ▾</button>
+            <div class="menu" id="exMenu" role="menu" hidden></div>
+          </div>
+          <button class="btn" type="button" id="saveF" title="Download this diagram as a file">Save</button>
+          <button class="btn" type="button" id="openF" title="Open a saved diagram file">Open</button>
+          <input type="file" id="fileIn" accept=".json,application/json" hidden>
+          <button class="btn danger" type="button" id="clear">Clear</button>
+        </div>
       </div>
-      <div class="canvaswrap">
+      <ol class="steps">
+        <li><span><b>Drag</b> the Operation block onto the canvas.</span></li>
+        <li><span><b>Set</b> its ID, name and time in the side panel.</span></li>
+        <li><span><b>Connect</b> by dragging from a node's right dot to the next node.</span></li>
+        <li><span><b>Read</b> the optimized line and metrics below.</span></li>
+      </ol>
+      <div class="canvaswrap" id="cwrap">
         <svg id="canvas" viewBox="0 0 960 460" aria-label="Editable precedence diagram"></svg>
       </div>
-      <p class="hint">Drag <b>Operation</b> onto the canvas, or double-click an empty spot. Drag from a node's right dot to another node to connect them. Click a node or arrow to select it; press Delete to remove it.</p>
-      <p class="msg" id="msg" role="status"></p>
+      <div class="below">
+        <span>Double-click empty space to add an operation. Click a node or arrow to select it.</span>
+        <span><kbd>Del</kbd> remove, <kbd>Ctrl</kbd>+<kbd>Z</kbd> undo, <kbd>Esc</kbd> deselect</span>
+      </div>
+      <p class="errs" id="errs" role="alert"></p>
     </div>
     <aside class="inspector" id="inspector" aria-live="polite"></aside>
   </section>
@@ -205,39 +273,69 @@ footer{margin-top:22px;font-size:.85rem;color:var(--muted)}
 
   <footer>Optimization rule: an operation with time t gets n = ⌈t ÷ target cycle time⌉ parallel stations, so it releases a unit every t ÷ n minutes. Line output = available minutes ÷ slowest effective time. Line efficiency = total work content ÷ (stations × cycle time). Operations with no incoming arrow start from Start; operations with no outgoing arrow feed End.</footer>
 </div>
-<div class="ghost" id="ghost"></div>
+<div class="ghost" id="ghost">New operation</div>
+<div class="toast" id="toast" role="status" hidden></div>
 
 <script>
-const W=110,H=62,R=24,VW=960,VH=460,EPS=1e-9,KEY="plo-v2";
-const EXAMPLE={nodes:[
-  {uid:"START",kind:"start",x:70,y:230},{uid:"END",kind:"end",x:890,y:230},
-  {uid:"n1",kind:"op",id:"A",t:0.5,x:260,y:120},{uid:"n2",kind:"op",id:"C",t:0.4,x:470,y:120},
-  {uid:"n3",kind:"op",id:"B",t:0.4,x:260,y:340},{uid:"n4",kind:"op",id:"D",t:0.2,x:470,y:340},
-  {uid:"n5",kind:"op",id:"E",t:0.33,x:690,y:230}],
-  edges:[["START","n1"],["n1","n2"],["START","n3"],["n3","n4"],["n2","n5"],["n4","n5"],["n5","END"]]};
+/* ---------- examples ---------- */
+const EXAMPLES=[
+  {title:"Notebook sketch",desc:"Two branches (A→C and B→D) merging at E. The diagram from your notes.",target:180,
+   ops:[["A","",0.5,""],["C","",0.4,"A"],["B","",0.4,""],["D","",0.2,"B"],["E","",0.33,"C,D"]]},
+  {title:"Simple serial line",desc:"Four operations in a row. Sewing is the obvious bottleneck.",target:120,
+   ops:[["A","Cutting",0.4,""],["B","Sewing",0.8,"A"],["C","Ironing",0.3,"B"],["D","Packing",0.2,"C"]]},
+  {title:"T-shirt assembly",desc:"Garment line: front, back and sleeves cut in parallel, then joined, seamed and finished.",target:100,
+   ops:[["A","Cut front",0.3,""],["B","Cut back",0.3,""],["C","Shoulder join",0.5,"A,B"],["D","Cut sleeves",0.2,""],["E","Attach sleeves",0.7,"C,D"],["F","Side seam",0.6,"E"],["G","Hem",0.4,"F"],["H","Inspect",0.25,"G"],["I","Pack",0.15,"H"]]},
+  {title:"Bicycle assembly",desc:"Frame and wheels built on separate branches, meeting at final assembly.",target:60,
+   ops:[["A","Weld frame",1.2,""],["B","Paint frame",0.9,"A"],["C","Build wheels",0.8,""],["D","Fit tyres",0.4,"C"],["E","Final assembly",1.0,"B,D"],["F","Test ride",0.5,"E"]]},
+  {title:"Bakery line",desc:"Long proofing and baking steps, with glaze prepared on a side branch.",target:75,
+   ops:[["A","Mix dough",0.6,""],["B","Proof",1.5,"A"],["C","Bake",1.2,"B"],["D","Cool",0.8,"C"],["E","Prep glaze",0.3,""],["F","Glaze",0.4,"D,E"],["G","Pack",0.25,"F"]]},
+  {title:"Electronics (PCB)",desc:"Circuit board line with a moulded case joining at box build. Several bottlenecks.",target:120,
+   ops:[["A","Solder paste",0.3,""],["B","Place parts",0.45,"A"],["C","Reflow oven",0.6,"B"],["D","Through-hole",0.5,"C"],["E","Inspect (AOI)",0.3,"D"],["F","Mould case",0.9,""],["G","Box build",0.7,"E,F"],["H","Function test",0.55,"G"],["I","Pack",0.2,"H"]]}
+];
+
+/* ---------- constants & state ---------- */
+const W=130,H=70,R=24,VH=460,EPS=1e-9,KEY="plo-v3";
 const clone=o=>JSON.parse(JSON.stringify(o));
 const $=s=>document.querySelector(s);
 const svg=$("#canvas");
 const fmt=(x,d=2)=>Number.isFinite(x)?(+x.toFixed(d)).toString():"–";
-const esc=s=>String(s).replace(/[&<>"]/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;"}[c]));
+const esc=s=>String(s??"").replace(/[&<>"]/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;"}[c]));
+const trunc=(s,n)=>{s=String(s||"");return s.length>n?s.slice(0,n-1)+"…":s;};
 
-let saved=null; try{saved=JSON.parse(localStorage.getItem(KEY));}catch(e){}
-let st=(saved&&saved.st&&saved.st.nodes)?saved.st:clone(EXAMPLE);
-if(saved&&saved.avail) $("#avail").value=saved.avail;
-if(saved&&saved.target) $("#target").value=saved.target;
-let sel=null, drag=null, lastRes=null;
-let seq=Math.max(5,...st.nodes.map(n=>parseInt(String(n.uid).slice(1))||0));
+let st,VW=880,sel=null,drag=null,lastRes=null,seq=0,hist=[],fut=[],editCommitted=false,toastT=null;
 
-function save(){try{localStorage.setItem(KEY,JSON.stringify({st,avail:$("#avail").value,target:$("#target").value}));}catch(e){}}
-const node=u=>st.nodes.find(n=>n.uid===u);
-const clampX=x=>Math.min(VW-W/2-6,Math.max(W/2+6,x));
-const clampY=y=>Math.min(VH-H/2-6,Math.max(H/2+6,y));
-function nextId(){const used=new Set(st.nodes.map(n=>n.id));for(let c=65;c<=90;c++){const s=String.fromCharCode(c);if(!used.has(s))return s;}let i=1;while(used.has("Op"+i))i++;return "Op"+i;}
-function addNode(x,y){
-  const n={uid:"n"+(++seq),kind:"op",id:nextId(),t:0.3,x:clampX(x),y:clampY(y)};
-  st.nodes.push(n);sel={type:"node",uid:n.uid};renderInspector();update();save();
-  const f=$('#inspector [data-f="t"]');if(f){f.focus();f.select();}
+function build(ex){
+  const nodes=[{uid:"START",kind:"start",x:70,y:VH/2},{uid:"END",kind:"end",x:810,y:VH/2}],edges=[],map={};
+  ex.ops.forEach(([id,name,t],i)=>{const uid="n"+(i+1);map[id]=uid;nodes.push({uid,kind:"op",id,name,t,x:0,y:0});});
+  const hasSucc=new Set();
+  ex.ops.forEach(([id,,,pre])=>{const ps=pre?pre.split(",").map(s=>s.trim()):[];
+    if(!ps.length)edges.push(["START",map[id]]);ps.forEach(p=>{edges.push([map[p],map[id]]);hasSucc.add(p);});});
+  ex.ops.forEach(([id])=>{if(!hasSucc.has(id))edges.push([map[id],"END"]);});
+  return {nodes,edges,vw:880};
 }
+function save(){try{localStorage.setItem(KEY,JSON.stringify({st,avail:$("#avail").value,target:$("#target").value}));}catch(e){}}
+function load(){
+  let s=null;try{s=JSON.parse(localStorage.getItem(KEY));}catch(e){}
+  if(s&&s.st&&Array.isArray(s.st.nodes)){st=s.st;if(s.avail)$("#avail").value=s.avail;if(s.target)$("#target").value=s.target;VW=st.vw||880;}
+  else{st=build(EXAMPLES[0]);$("#target").value=EXAMPLES[0].target;arrange(true);}
+  seq=Math.max(0,...st.nodes.map(n=>parseInt(String(n.uid).slice(1))||0));
+}
+const node=u=>st.nodes.find(n=>n.uid===u);
+const clampX=x=>Math.min(VW-W/2-8,Math.max(W/2+8,x));
+const clampY=y=>Math.min(VH-H/2-8,Math.max(H/2+14,y));
+function setCanvas(){VW=st.vw||880;svg.setAttribute("viewBox",`0 0 ${VW} ${VH}`);svg.setAttribute("width",VW);svg.setAttribute("height",VH);}
+function nextId(){const used=new Set(st.nodes.map(n=>n.id));for(let c=65;c<=90;c++){const s=String.fromCharCode(c);if(!used.has(s))return s;}let i=1;while(used.has("Op"+i))i++;return "Op"+i;}
+
+/* ---------- undo ---------- */
+function commit(){hist.push(JSON.stringify(st));if(hist.length>80)hist.shift();fut=[];syncUndo();}
+function restore(s){st=JSON.parse(s);setCanvas();sel=null;renderInspector();update();save();syncUndo();}
+function undo(){if(!hist.length)return;fut.push(JSON.stringify(st));restore(hist.pop());toast("Undone.");}
+function redo(){if(!fut.length)return;hist.push(JSON.stringify(st));restore(fut.pop());toast("Redone.");}
+function syncUndo(){$("#undo").disabled=!hist.length;$("#redo").disabled=!fut.length;}
+
+function toast(t,kind){const el=$("#toast");el.textContent=t;el.className="toast"+(kind==="err"?" err":"");el.hidden=false;clearTimeout(toastT);toastT=setTimeout(()=>el.hidden=true,kind==="err"?4200:2600);}
+
+/* ---------- geometry ---------- */
 function svgPt(e){const p=svg.createSVGPoint();p.x=e.clientX;p.y=e.clientY;return p.matrixTransform(svg.getScreenCTM().inverse());}
 const outPt=n=>n.kind==="start"?{x:n.x+R,y:n.y}:{x:n.x+W/2,y:n.y};
 const inPt=n=>n.kind==="end"?{x:n.x-R-6,y:n.y}:{x:n.x-W/2-6,y:n.y};
@@ -249,23 +347,22 @@ function connectErr(a,b){
   if(a.kind==="end") return "Nothing can flow out of End.";
   if(a.kind==="start"&&b.kind==="end") return "Connect Start to an operation, not straight to End.";
   if(st.edges.some(([x,y])=>x===a.uid&&y===b.uid)) return "Those two are already connected.";
-  if(reach(b.uid,a.uid)) return "That connection would create a loop. Flow must run one way.";
+  if(reach(b.uid,a.uid)) return "That arrow would create a loop. Flow must run one way.";
   return null;
 }
-const say=t=>{$("#msg").textContent=t||"";};
 
 /* ---------- model → metrics ---------- */
 function compute(){
   const avail=parseFloat($("#avail").value)||60,target=parseFloat($("#target").value)||1,Tc=avail/target;
   const opsN=st.nodes.filter(n=>n.kind==="op"),errs=[],seen=new Set(),bad=new Set();
-  if(!opsN.length) errs.push("Add at least one operation to the canvas.");
+  if(!opsN.length) return {empty:true,errs:[],bad,avail,target,Tc};
   opsN.forEach(n=>{const id=String(n.id).trim(),t=parseFloat(n.t);
     if(!id){errs.push("An operation has no ID.");bad.add(n.uid);}
-    else if(seen.has(id)){errs.push(`ID "${id}" is used twice.`);bad.add(n.uid);}
+    else if(seen.has(id)){errs.push(`ID "${id}" is used twice. Give each operation its own ID.`);bad.add(n.uid);}
     if(!(t>0)){errs.push(`${id||"An operation"}: time must be greater than 0.`);bad.add(n.uid);}
     seen.add(id);});
   if(errs.length) return {errs,bad,avail,target,Tc};
-  const list=opsN.map(n=>({uid:n.uid,id:String(n.id).trim(),t:parseFloat(n.t),
+  const list=opsN.map(n=>({uid:n.uid,id:String(n.id).trim(),name:n.name||"",t:parseFloat(n.t),
     pre:st.edges.filter(([a,b])=>b===n.uid&&node(a).kind==="op").map(([a])=>String(node(a).id).trim())}));
   const succ={},indeg={};list.forEach(o=>{succ[o.id]=[];indeg[o.id]=o.pre.length;});
   list.forEach(o=>o.pre.forEach(p=>succ[p].push(o.id)));
@@ -274,12 +371,21 @@ function compute(){
   const by=Object.fromEntries(list.map(o=>[o.id,o])),level={},ef={};
   order.forEach(id=>{const o=by[id];level[id]=1+Math.max(0,...o.pre.map(p=>level[p]));ef[id]=o.t+Math.max(0,...o.pre.map(p=>ef[p]));});
   const g={list,succ,level,cp:Math.max(...Object.values(ef))};
-  return {g,avail,target,Tc,A:plan(g,avail,Tc,false),B:plan(g,avail,Tc,true)};
+  return {g,avail,target,Tc,bad,errs:[],A:plan(g,avail,Tc,false),B:plan(g,avail,Tc,true)};
 }
 function plan(g,avail,Tc,opt){
   const s=g.list.map(o=>{const n=opt?Math.max(1,Math.ceil(o.t/Tc-EPS)):1;return {...o,n,eff:o.t/n,cap:avail/(o.t/n)};});
   const N=s.reduce((a,o)=>a+o.n,0),work=s.reduce((a,o)=>a+o.t,0),cyc=Math.max(...s.map(o=>o.eff));
   return {st:s,N,work,cyc,bott:s.filter(o=>Math.abs(o.eff-cyc)<EPS).map(o=>o.id),out:avail/cyc,eff:work/(N*cyc),idle:N*cyc-work};
+}
+
+/* ---------- node drawing (shared) ---------- */
+function opBox(x,y,label,name,time,cap){
+  return `<rect class="box" x="${x-W/2}" y="${y-H/2}" width="${W}" height="${H}"/>
+    <text class="nid" x="${x-W/2+10}" y="${y-11}">${esc(trunc(label,7))}</text>
+    <text class="nt" x="${x+W/2-12}" y="${y-11}" text-anchor="end">${esc(time)} min</text>
+    <text class="nn" x="${x-W/2+10}" y="${y+8}">${esc(trunc(name,17))}</text>
+    <text class="nc" x="${x-W/2+10}" y="${y+26}">${cap}</text>`;
 }
 
 /* ---------- editor ---------- */
@@ -288,54 +394,72 @@ function renderEditor(res){
   if(res&&res.A) res.A.st.forEach(o=>{caps[o.uid]=o.cap;if(res.A.bott.includes(o.id))hot.add(o.uid);});
   const mk=(id,c)=>`<marker id="${id}" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto"><path d="M0,0 L10,5 L0,10 z" fill="var(${c})"/></marker>`;
   let h=`<defs>${mk("arE","--edge")}${mk("arS","--par")}</defs>`;
+  if(!st.nodes.some(n=>n.kind==="op")) h+=`<text class="empty" x="${VW/2}" y="${VH/2-8}" text-anchor="middle">Drag an Operation here to start</text><text class="empty2" x="${VW/2}" y="${VH/2+18}" text-anchor="middle">or double-click anywhere, or pick one of the Examples</text>`;
   st.edges.forEach(([a,b],i)=>{const A=node(a),B=node(b);if(!A||!B)return;const d=curve(outPt(A),inPt(B)),s=sel&&sel.type==="edge"&&sel.i===i;
     h+=`<g class="eedge${s?" sel":""}" data-edge="${i}"><path class="hit" d="${d}"/><path class="line" d="${d}" marker-end="url(#${s?"arS":"arE"})"/></g>`;});
   st.nodes.forEach(n=>{
-    const s=sel&&sel.type==="node"&&sel.uid===n.uid?" sel":"";
+    const s=sel&&sel.type==="node"&&sel.uid===n.uid;
+    const port=(x,y)=>`<circle class="porthit" data-port="${n.uid}" cx="${x}" cy="${y}" r="15"/><circle class="port" cx="${x}" cy="${y}" r="7"/>`;
     if(n.kind!=="op"){
-      h+=`<g class="enode term${s}" data-uid="${n.uid}"><circle class="body" cx="${n.x}" cy="${n.y}" r="${R}"/><text x="${n.x}" y="${n.y+4}" text-anchor="middle">${n.kind==="start"?"Start":"End"}</text>${n.kind==="start"?`<circle class="port" data-port="${n.uid}" cx="${n.x+R}" cy="${n.y}" r="7"/>`:""}</g>`;
+      h+=`<g class="enode term${s?" sel":""}" data-uid="${n.uid}"><circle class="body" cx="${n.x}" cy="${n.y}" r="${R}"/><text x="${n.x}" y="${n.y+4}" text-anchor="middle">${n.kind==="start"?"Start":"End"}</text>${n.kind==="start"?port(n.x+R,n.y):""}</g>`;
     }else{
-      h+=`<g class="enode${hot.has(n.uid)?" hot":""}${bad.has(n.uid)?" bad":""}${s}" data-uid="${n.uid}"><rect x="${n.x-W/2}" y="${n.y-H/2}" width="${W}" height="${H}"/>
-        <text class="nid" x="${n.x-W/2+10}" y="${n.y-8}">${esc(n.id||"?")}</text>
-        <text class="nt" x="${n.x+W/2-12}" y="${n.y-8}" text-anchor="end">${esc(n.t)} min</text>
-        <text class="nc" x="${n.x-W/2+10}" y="${n.y+18}">${caps[n.uid]!=null?fmt(caps[n.uid],0)+" units/hr":""}</text>
-        <circle class="port" data-port="${n.uid}" cx="${n.x+W/2}" cy="${n.y}" r="7"/></g>`;
+      h+=`<g class="enode${hot.has(n.uid)?" hot":""}${bad.has(n.uid)?" bad":""}${s?" sel":""}" data-uid="${n.uid}">
+        ${opBox(n.x,n.y,n.id||"?",n.name,n.t,caps[n.uid]!=null?fmt(caps[n.uid],0)+" units/hr":"")}
+        ${port(n.x+W/2,n.y)}
+        ${s?`<g class="delbtn" data-del="${n.uid}"><title>Delete</title><circle cx="${n.x+W/2}" cy="${n.y-H/2}" r="11"/><text x="${n.x+W/2}" y="${n.y-H/2+5}" text-anchor="middle">×</text></g>`:""}</g>`;
     }
   });
   svg.innerHTML=h+`<path id="tmp" class="tmp" d=""/>`;
 }
 
 function renderInspector(){
+  editCommitted=false;
   const el=$("#inspector"),L=m=>m.kind==="start"?"Start":m.kind==="end"?"End":m.id;
   if(sel&&sel.type==="node"){
     const n=node(sel.uid); if(!n){sel=null;return renderInspector();}
-    if(n.kind!=="op"){el.innerHTML=`<h2>${L(n)}</h2><p>${n.kind==="start"?"Raw material enters here. Drag from its dot to the first operations.":"Finished units leave here. Connect the last operation into it."} It can be moved but not deleted.</p>`;return;}
+    if(n.kind!=="op"){el.innerHTML=`<h2>${L(n)}</h2><p>${n.kind==="start"?"Raw material enters here. Drag from its dot to the first operations.":"Finished units leave here. Connect the last operation into it."}</p><p style="margin-top:8px">You can move it, but not delete it.</p>`;return;}
     const pre=st.edges.filter(([,b])=>b===n.uid).map(([a])=>L(node(a))).join(", ")||"Start";
     const nxt=st.edges.filter(([a])=>a===n.uid).map(([,b])=>L(node(b))).join(", ")||"End";
-    el.innerHTML=`<h2>Operation</h2>
-      <div class="field"><label for="fId">ID</label><input id="fId" data-f="id" value="${esc(n.id)}" maxlength="8"></div>
+    el.innerHTML=`<h2>Operation</h2><div id="opStatus"></div>
+      <div class="field"><label for="fId">ID</label><input id="fId" data-f="id" value="${esc(n.id)}" maxlength="7"><span class="help">Short code, e.g. A or CUT</span></div>
+      <div class="field"><label for="fName">Name (optional)</label><input id="fName" data-f="name" value="${esc(n.name)}" maxlength="30" placeholder="e.g. Sewing"></div>
       <div class="field"><label for="fT">Time per unit (min)</label><input id="fT" data-f="t" type="number" min="0" step="0.01" value="${esc(n.t)}"></div>
-      <dl class="kv"><dt>Comes after</dt><dd>${esc(pre)}</dd><dt>Leads to</dt><dd>${esc(nxt)}</dd><dt>Capacity</dt><dd id="fCap">–</dd></dl>
+      <dl class="kv"><dt>Comes after</dt><dd>${esc(pre)}</dd><dt>Leads to</dt><dd>${esc(nxt)}</dd></dl>
       <button class="btn danger" type="button" id="delSel">Delete operation</button>`;
-    updateCap();
+    updateOpStatus();
   }else if(sel&&sel.type==="edge"){
     const e=st.edges[sel.i]; if(!e){sel=null;return renderInspector();}
-    el.innerHTML=`<h2>Connection</h2><p style="margin-bottom:14px">${esc(L(node(e[0])))} must finish before ${esc(L(node(e[1])))} starts.</p><button class="btn danger" type="button" id="delSel">Delete connection</button>`;
+    el.innerHTML=`<h2>Arrow</h2><p style="margin-bottom:14px"><b style="color:var(--ink)">${esc(L(node(e[0])))}</b> must finish before <b style="color:var(--ink)">${esc(L(node(e[1])))}</b> starts.</p><button class="btn danger" type="button" id="delSel">Delete arrow</button>`;
   }else{
-    el.innerHTML=`<h2>Details</h2><p>Select an operation to edit its ID and time, or an arrow to remove it.</p><dl class="kv" style="margin-top:14px"><dt>Operations</dt><dd>${st.nodes.filter(n=>n.kind==="op").length}</dd><dt>Connections</dt><dd>${st.edges.length}</dd></dl>`;
+    const r=lastRes,n=st.nodes.filter(n=>n.kind==="op").length;
+    let sum="";
+    if(r&&r.A) sum=`<div class="status${r.B.out+EPS>=r.target?"":" hot"}">Output goes from <b>${fmt(r.A.out,0)}</b> to <b>${fmt(r.B.out,0)}</b> units/hr after optimizing.</div>`;
+    el.innerHTML=`<h2>Details</h2>${sum}<p>Select an operation to edit it, or an arrow to remove it.</p><dl class="kv" style="margin-top:14px"><dt>Operations</dt><dd>${n}</dd><dt>Arrows</dt><dd>${st.edges.length}</dd></dl>`;
   }
 }
-function updateCap(){const c=$("#fCap");if(!c||!sel)return;const t=parseFloat(node(sel.uid).t),av=parseFloat($("#avail").value)||60;c.textContent=t>0?fmt(av/t,0)+" units/hr":"–";}
+function updateOpStatus(){
+  const box=$("#opStatus");if(!box||!sel)return;
+  const n=node(sel.uid),r=lastRes,t=parseFloat(n.t);
+  if(!(t>0)){box.innerHTML=`<div class="status hot">Enter a time greater than 0.</div>`;return;}
+  const cap=r.avail/t,need=Math.max(1,Math.ceil(t/r.Tc-EPS)),hot=r.A&&r.A.bott.includes(String(n.id).trim());
+  box.innerHTML=`<div class="status${cap+EPS<r.target?" hot":""}">${fmt(cap,0)} units/hr${hot?", current bottleneck":""}.<br>${need>1?`Needs ${need} parallel stations to reach ${fmt(r.target,0)}/hr.`:"Meets the target on one station."}</div>`;
+}
 function deleteSel(){
   if(!sel)return;
-  if(sel.type==="node"){const n=node(sel.uid);if(!n||n.kind!=="op")return;st.nodes=st.nodes.filter(m=>m!==n);st.edges=st.edges.filter(([a,b])=>a!==n.uid&&b!==n.uid);}
-  else st.edges.splice(sel.i,1);
-  sel=null;renderInspector();update();save();
+  if(sel.type==="node"){const n=node(sel.uid);if(!n||n.kind!=="op")return;commit();st.nodes=st.nodes.filter(m=>m!==n);st.edges=st.edges.filter(([a,b])=>a!==n.uid&&b!==n.uid);toast(`Deleted ${n.id}.`);}
+  else{commit();st.edges.splice(sel.i,1);toast("Arrow deleted.");}
+  sel=null;update();renderInspector();save();
+}
+function addNode(x,y){
+  commit();
+  const n={uid:"n"+(++seq),kind:"op",id:nextId(),name:"",t:0.3,x:clampX(x),y:clampY(y)};
+  st.nodes.push(n);sel={type:"node",uid:n.uid};update();renderInspector();save();
+  const f=$("#fT");if(f){f.focus();f.select();}
 }
 
 /* ---------- results ---------- */
 function drawDiagram(g,p){
-  const colW=170,rowH=86,pad=40,L=Math.max(...Object.values(g.level));
+  const colW=190,rowH=92,pad=44,L=Math.max(...Object.values(g.level));
   const cols=Array.from({length:L+2},()=>[]),pos={};
   p.st.forEach(o=>{for(let i=0;i<o.n;i++)cols[g.level[o.id]].push({o,i});});
   const maxRows=Math.max(1,...cols.map(c=>c.length)),h=maxRows*rowH+pad*2,w=(L+1)*colW+pad*2+60,cy=h/2;
@@ -352,20 +476,20 @@ function drawDiagram(g,p){
       else for(let i=0;i<pr.n;i++)for(let j=0;j<o.n;j++)edges+=path(pos[pid+"#"+i],pos[o.id+"#"+j],true);});
   });
   p.st.forEach(o=>{const cls=p.bott.includes(o.id)?"hot":(o.n>1?"par":"");
-    for(let i=0;i<o.n;i++){const {x,y}=pos[o.id+"#"+i],lab=o.n>1?`${o.id}${i+1}`:o.id;
-      nodes+=`<g class="node ${cls}"><title>${esc(o.id)}: ${fmt(o.t)} min${o.n>1?` split over ${o.n} stations`:""}</title><rect x="${x-W/2}" y="${y-H/2}" width="${W}" height="${H}"/>
-        <text class="nid" x="${x-W/2+10}" y="${y-8}">${esc(lab)}</text><text class="nt" x="${x+W/2-10}" y="${y-8}" text-anchor="end">${fmt(o.eff)} min</text>
-        <text class="nc" x="${x-W/2+10}" y="${y+18}">${fmt(o.cap,0)} units/hr</text></g>`;}});
+    for(let i=0;i<o.n;i++){const {x,y}=pos[o.id+"#"+i];
+      nodes+=`<g class="node ${cls}"><title>${esc(o.id)}${o.name?" ("+esc(o.name)+")":""}: ${fmt(o.t)} min${o.n>1?`, split over ${o.n} stations`:""}</title>${opBox(x,y,o.n>1?o.id+(i+1):o.id,o.name,fmt(o.eff),fmt(o.cap,0)+" units/hr")}</g>`;}});
   const term=(c,t)=>`<g class="rterm"><circle cx="${c.x}" cy="${c.y}" r="18"/><text x="${c.x}" y="${c.y+4}" text-anchor="middle">${t}</text></g>`;
   return `<svg viewBox="0 0 ${w} ${h}" width="${w}" height="${h}" role="img" aria-label="Optimized precedence diagram"><defs><marker id="ar" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto"><path d="M0,0 L10,5 L0,10 z" fill="var(--edge)"/></marker></defs>${edges}${nodes}${term(S,"Start")}${term(E,"End")}</svg>`;
 }
 
+function clearResults(msg){$("#diagram").innerHTML=`<p class="placeholder">${msg}</p>`;$("#metrics").innerHTML="";$("#bars").innerHTML="";$("#formula").textContent="No results yet.";$("#verdict").textContent="";}
 function update(){
   const r=compute(); lastRes=r;
   $("#tc").textContent=`${fmt(r.Tc,3)} min / unit`;
   renderEditor(r);
-  if(r.errs){say(r.errs.join(" "));$("#diagram").innerHTML="";$("#metrics").innerHTML="";$("#bars").innerHTML="";$("#formula").textContent="Fix the diagram to see results.";$("#verdict").textContent="";return;}
-  say("");
+  $("#errs").textContent=r.errs.join(" ");
+  if(r.empty){clearResults("Add operations to the flow diagram to see the optimized line.");return;}
+  if(r.errs.length){clearResults("Fix the highlighted operations to see results.");return;}
   const {g,A,B,avail,target}=r;
   $("#diagram").innerHTML=drawDiagram(g,B);
   const rows=[["Workstations",A.N,B.N,0],["Bottleneck",A.bott.join(", "),B.bott.join(", "),null],
@@ -377,46 +501,65 @@ function update(){
   const split=B.st.filter(o=>o.n>1).map(o=>`${o.id} → ${o.n}`).join(", ");
   $("#verdict").textContent=(B.out+EPS>=target?`Meets the ${fmt(target,0)} units/hr target. `:`Falls short of ${fmt(target,0)} units/hr. `)+(split?`Parallel stations added: ${split}.`:"No splits needed; every operation already meets the target.");
   const max=Math.max(target,...B.st.map(o=>o.cap),...A.st.map(o=>o.cap))*1.15;
-  $("#bars").innerHTML=A.st.map((a,i)=>{const b=B.st[i];return `<div class="bar"><span class="id">${esc(a.id)}</span><div class="track">
+  $("#bars").innerHTML=A.st.map((a,i)=>{const b=B.st[i];return `<div class="bar"><span class="id">${esc(a.id)}${a.name?`<small>${esc(a.name)}</small>`:""}</span><div class="track">
     <div class="fill before${a.cap+EPS<target?" hot":""}" style="width:${a.cap/max*100}%"><span>${fmt(a.cap,0)}</span></div>
     <div class="fill after${b.cap+EPS<target?" hot":""}" style="width:${b.cap/max*100}%"><span>${fmt(b.cap,0)}${b.n>1?` (${b.n} stations)`:""}</span></div>
     <i class="target" style="left:${target/max*100}%"></i></div></div>`;}).join("");
 }
 
-function arrange(){
-  const r=compute(); if(r.errs){say("Fix the errors before auto-arranging.");return;}
-  const L=Math.max(...Object.values(r.g.level)),colW=(VW-140)/(L+1),cols={};
+function arrange(silent){
+  const r=compute(); if(r.empty)return; if(r.errs.length){toast("Fix the highlighted operations before tidying up.","err");return;}
+  const L=Math.max(...Object.values(r.g.level));
+  st.vw=Math.max(880,140+(L+1)*185);setCanvas();
+  const colW=(VW-140)/(L+1),cols={};
   st.nodes.filter(n=>n.kind==="op").forEach(n=>{const l=r.g.level[String(n.id).trim()];(cols[l]=cols[l]||[]).push(n);});
-  Object.entries(cols).forEach(([l,arr])=>{arr.sort((a,b)=>a.y-b.y);const gap=Math.min(110,(VH-80)/arr.length);
+  Object.entries(cols).forEach(([l,arr])=>{arr.sort((a,b)=>a.y-b.y);const gap=Math.min(120,(VH-90)/Math.max(1,arr.length-1||1));
     arr.forEach((n,i)=>{n.x=clampX(70+l*colW);n.y=clampY(VH/2+(i-(arr.length-1)/2)*gap);});});
   Object.assign(node("START"),{x:70,y:VH/2});Object.assign(node("END"),{x:VW-70,y:VH/2});
-  update();save();
+  if(!silent){update();save();}
 }
 
-/* ---------- interactions ---------- */
+/* ---------- examples menu ---------- */
+const menu=$("#exMenu"),exBtn=$("#exBtn");
+menu.innerHTML=EXAMPLES.map((e,i)=>`<button type="button" role="menuitem" data-ex="${i}"><b>${esc(e.title)}</b><span>${esc(e.desc)}</span><small>${e.ops.length} operations, target ${e.target} units/hr</small></button>`).join("");
+function openMenu(o){menu.hidden=!o;exBtn.setAttribute("aria-expanded",o);if(o)menu.querySelector("button").focus();}
+exBtn.addEventListener("click",()=>openMenu(menu.hidden));
+menu.addEventListener("click",e=>{const b=e.target.closest("[data-ex]");if(!b)return;const ex=EXAMPLES[+b.dataset.ex];
+  commit();st=build(ex);$("#avail").value=60;$("#target").value=ex.target;arrange(true);
+  seq=ex.ops.length;sel=null;update();renderInspector();save();openMenu(false);toast(`Loaded "${ex.title}". Press Undo to go back.`);});
+menu.addEventListener("keydown",e=>{const items=[...menu.querySelectorAll("button")],i=items.indexOf(document.activeElement);
+  if(e.key==="ArrowDown"){e.preventDefault();items[(i+1)%items.length].focus();}
+  if(e.key==="ArrowUp"){e.preventDefault();items[(i-1+items.length)%items.length].focus();}
+  if(e.key==="Escape"){openMenu(false);exBtn.focus();}});
+document.addEventListener("click",e=>{if(!menu.hidden&&!e.target.closest(".menuwrap"))openMenu(false);});
+
+/* ---------- canvas interactions ---------- */
 svg.addEventListener("pointerdown",e=>{
   if(e.button!==0)return;
+  const del=e.target.closest("[data-del]");
+  if(del){e.preventDefault();e.stopPropagation();deleteSel();return;}
   const port=e.target.closest("[data-port]");
   if(port){e.preventDefault();drag={type:"link",from:port.dataset.port};return;}
   const g=e.target.closest("[data-uid]");
   if(g){e.preventDefault();const n=node(g.dataset.uid),p=svgPt(e);drag={type:"move",uid:n.uid,dx:p.x-n.x,dy:p.y-n.y,sx:e.clientX,sy:e.clientY,moved:false};return;}
   const ed=e.target.closest("[data-edge]");
-  if(ed){sel={type:"edge",i:+ed.dataset.edge};renderInspector();update();return;}
-  if(sel){sel=null;renderInspector();update();}
+  if(ed){sel={type:"edge",i:+ed.dataset.edge};update();renderInspector();return;}
+  if(sel){sel=null;update();renderInspector();}
 });
 svg.addEventListener("dblclick",e=>{if(e.target.closest("[data-uid],[data-edge]"))return;const p=svgPt(e);addNode(p.x,p.y);});
 
-const ghost=$("#ghost");
-$("#paletteOp").addEventListener("pointerdown",e=>{e.preventDefault();drag={type:"new"};ghost.style.display="block";ghost.style.left=e.clientX+"px";ghost.style.top=e.clientY+"px";});
-$("#paletteOp").addEventListener("keydown",e=>{if(e.key==="Enter"||e.key===" "){e.preventDefault();const k=st.nodes.filter(n=>n.kind==="op").length;addNode(200+(k%4)*150,90+(Math.floor(k/4)%4)*100);}});
+const ghost=$("#ghost"),cwrap=$("#cwrap");
+const overCanvas=e=>{const r=cwrap.getBoundingClientRect();return e.clientX>=r.left&&e.clientX<=r.right&&e.clientY>=r.top&&e.clientY<=r.bottom;};
+$("#paletteOp").addEventListener("pointerdown",e=>{e.preventDefault();drag={type:"new"};ghost.style.display="grid";ghost.style.left=e.clientX+"px";ghost.style.top=e.clientY+"px";});
+$("#paletteOp").addEventListener("keydown",e=>{if(e.key==="Enter"||e.key===" "){e.preventDefault();const k=st.nodes.filter(n=>n.kind==="op").length;addNode(220+(k%4)*170,100+(Math.floor(k/4)%3)*120);}});
 
 window.addEventListener("pointermove",e=>{
   if(!drag)return;
-  if(drag.type==="new"){ghost.style.left=e.clientX+"px";ghost.style.top=e.clientY+"px";return;}
+  if(drag.type==="new"){ghost.style.left=e.clientX+"px";ghost.style.top=e.clientY+"px";cwrap.classList.toggle("drop",overCanvas(e));return;}
   const p=svgPt(e);
   if(drag.type==="move"){
-    if(!drag.moved&&Math.hypot(e.clientX-drag.sx,e.clientY-drag.sy)<4)return;
-    drag.moved=true;const n=node(drag.uid);
+    if(!drag.moved){if(Math.hypot(e.clientX-drag.sx,e.clientY-drag.sy)<4)return;drag.moved=true;commit();}
+    const n=node(drag.uid);
     if(n.kind==="op"){n.x=clampX(p.x-drag.dx);n.y=clampY(p.y-drag.dy);}
     else{n.x=Math.min(VW-R-4,Math.max(R+4,p.x-drag.dx));n.y=Math.min(VH-R-4,Math.max(R+4,p.y-drag.dy));}
     renderEditor(lastRes);
@@ -424,38 +567,62 @@ window.addEventListener("pointermove",e=>{
 });
 window.addEventListener("pointerup",e=>{
   if(!drag)return;const d=drag;drag=null;
-  if(d.type==="new"){
-    ghost.style.display="none";const r=svg.getBoundingClientRect();
-    if(e.clientX>=r.left&&e.clientX<=r.right&&e.clientY>=r.top&&e.clientY<=r.bottom){const p=svgPt(e);addNode(p.x,p.y);}
-    return;
-  }
-  if(d.type==="move"){if(!d.moved){sel={type:"node",uid:d.uid};renderInspector();}update();save();return;}
+  if(d.type==="new"){ghost.style.display="none";cwrap.classList.remove("drop");if(overCanvas(e)){const p=svgPt(e);addNode(p.x,p.y);}return;}
+  if(d.type==="move"){if(!d.moved){sel={type:"node",uid:d.uid};update();renderInspector();}else{update();save();}return;}
   if(d.type==="link"){
     const el=document.elementFromPoint(e.clientX,e.clientY),g=el&&el.closest&&el.closest("#canvas [data-uid]");
-    update();
-    if(g){const a=node(d.from),b=node(g.dataset.uid),err=connectErr(a,b);
-      if(err){say(err);return;}
-      st.edges.push([a.uid,b.uid]);sel={type:"edge",i:st.edges.length-1};renderInspector();update();save();}
+    if(!g){update();return;}
+    const a=node(d.from),b=node(g.dataset.uid),err=connectErr(a,b);
+    if(err){update();toast(err,"err");return;}
+    commit();st.edges.push([a.uid,b.uid]);sel=null;update();renderInspector();save();
+    const L=m=>m.kind==="start"?"Start":m.kind==="end"?"End":m.id;toast(`Connected ${L(a)} → ${L(b)}.`);
   }
 });
-window.addEventListener("pointercancel",()=>{drag=null;ghost.style.display="none";update();});
+window.addEventListener("pointercancel",()=>{drag=null;ghost.style.display="none";cwrap.classList.remove("drop");update();});
 
 document.addEventListener("keydown",e=>{
-  if(/INPUT|TEXTAREA/.test(document.activeElement.tagName))return;
+  const typing=/INPUT|TEXTAREA/.test(document.activeElement.tagName);
+  if((e.ctrlKey||e.metaKey)&&!typing){
+    if(e.key.toLowerCase()==="z"&&!e.shiftKey){e.preventDefault();undo();return;}
+    if(e.key.toLowerCase()==="y"||(e.key.toLowerCase()==="z"&&e.shiftKey)){e.preventDefault();redo();return;}
+  }
+  if(typing)return;
   if((e.key==="Delete"||e.key==="Backspace")&&sel){e.preventDefault();deleteSel();}
-  if(e.key==="Escape"&&sel){sel=null;renderInspector();update();}
+  if(e.key==="Escape"&&sel){sel=null;update();renderInspector();}
 });
+
+/* ---------- inspector & params ---------- */
 $("#inspector").addEventListener("input",e=>{
   const f=e.target.dataset.f;if(!f||!sel)return;
-  node(sel.uid)[f]=f==="id"?e.target.value.trim():e.target.value;updateCap();update();save();
+  if(!editCommitted){commit();editCommitted=true;}
+  node(sel.uid)[f]=f==="t"?e.target.value:e.target.value.trim();update();updateOpStatus();save();
 });
 $("#inspector").addEventListener("click",e=>{if(e.target.id==="delSel")deleteSel();});
-["avail","target"].forEach(id=>$("#"+id).addEventListener("input",()=>{update();updateCap();save();}));
-$("#arrange").addEventListener("click",arrange);
-$("#loadEx").addEventListener("click",()=>{st=clone(EXAMPLE);sel=null;$("#avail").value=60;$("#target").value=180;renderInspector();update();save();});
-$("#clear").addEventListener("click",()=>{st={nodes:clone(EXAMPLE.nodes.slice(0,2)),edges:[]};sel=null;renderInspector();update();save();say("Canvas cleared. Drag Operation onto it to start.");});
+["avail","target"].forEach(id=>$("#"+id).addEventListener("input",()=>{update();if(sel)updateOpStatus();else renderInspector();save();}));
 
-renderInspector();update();
+/* ---------- toolbar ---------- */
+$("#undo").addEventListener("click",undo);
+$("#redo").addEventListener("click",redo);
+$("#arrange").addEventListener("click",()=>{if(!st.nodes.some(n=>n.kind==="op"))return;commit();arrange();toast("Tidied up.");});
+$("#clear").addEventListener("click",()=>{if(!st.nodes.some(n=>n.kind==="op"))return;commit();st={nodes:clone(build({ops:[]}).nodes),edges:[],vw:880};setCanvas();sel=null;update();renderInspector();save();toast("Canvas cleared. Press Undo to bring it back.");});
+$("#saveF").addEventListener("click",()=>{
+  const blob=new Blob([JSON.stringify({app:"production-line-optimizer",version:3,avail:$("#avail").value,target:$("#target").value,st},null,2)],{type:"application/json"});
+  const a=document.createElement("a");a.href=URL.createObjectURL(blob);a.download="production-line.json";document.body.appendChild(a);a.click();a.remove();setTimeout(()=>URL.revokeObjectURL(a.href),1000);toast("Saved production-line.json.");
+});
+$("#openF").addEventListener("click",()=>$("#fileIn").click());
+$("#fileIn").addEventListener("change",e=>{
+  const f=e.target.files[0];if(!f)return;const rd=new FileReader();
+  rd.onload=()=>{try{const d=JSON.parse(rd.result);
+      if(!d.st||!Array.isArray(d.st.nodes)||!Array.isArray(d.st.edges)||!d.st.nodes.some(n=>n.uid==="START")||!d.st.nodes.some(n=>n.uid==="END"))throw 0;
+      commit();st=d.st;if(d.avail)$("#avail").value=d.avail;if(d.target)$("#target").value=d.target;
+      seq=Math.max(0,...st.nodes.map(n=>parseInt(String(n.uid).slice(1))||0));setCanvas();sel=null;update();renderInspector();save();toast(`Opened ${f.name}.`);
+    }catch(err){toast("That file isn't a saved diagram from this page.","err");}
+    e.target.value="";};
+  rd.readAsText(f);
+});
+
+/* ---------- init ---------- */
+load();setCanvas();update();renderInspector();syncUndo();
 </script>
 </body>
 </html>
